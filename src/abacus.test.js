@@ -1,7 +1,32 @@
 // @ts-check
+
 import { test } from "vitest";
 import { AbacusMachine } from "./abacus.js";
 import { expect } from "vitest";
+
+test("should crash when accessing an invalid memory address", () => {
+  const machine = new AbacusMachine();
+
+  expect(() => {
+    machine.getMemoryValue("1001")
+  }).toThrow(/Memory access violation/)
+
+  expect(() => {
+    machine.getMemoryValue("2000")
+  }).toThrow(/Memory access violation/)
+});
+
+test("should crash when executing an instruction with a invalid opcode", () => {
+  const machine = new AbacusMachine();
+
+  machine.setMemoryValue("200", 0x8200)
+
+  expect(() => {
+    machine.step()
+  }).toThrow(/Invalid OpCode/)
+
+  expect(machine.isRunning).toBe(false)
+});
 
 // En las celdas 150(16) y 250(16) se encuentran almacenados dos números X e Y.
 // Efectuar X - Y almacenando el resultado en la celda 300(16).
