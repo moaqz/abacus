@@ -31,7 +31,7 @@ export class AbacusMachine {
    */
   constructor(opts = {}) {
     if (opts.baseAddress) {
-      this.#BASE_ADDRESS = opts.baseAddress
+      this.#BASE_ADDRESS = opts.baseAddress;
     }
 
     this.#registries.pc[0] = this.#BASE_ADDRESS;

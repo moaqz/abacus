@@ -8,31 +8,31 @@ test("should crash when accessing an invalid memory address", () => {
   const machine = new AbacusMachine();
 
   expect(() => {
-    machine.getMemoryValue("1001")
-  }).toThrow(/Memory access violation/)
+    machine.getMemoryValue("1001");
+  }).toThrow(/Memory access violation/);
 
   expect(() => {
-    machine.getMemoryValue("2000")
-  }).toThrow(/Memory access violation/)
+    machine.getMemoryValue("2000");
+  }).toThrow(/Memory access violation/);
 });
 
 test("should crash when executing an instruction with a invalid opcode", () => {
   const machine = new AbacusMachine();
 
-  machine.setMemoryValue("200", 0x8200)
+  machine.setMemoryValue("200", 0x8200);
 
   expect(() => {
-    machine.step()
-  }).toThrow(/Invalid OpCode/)
+    machine.step();
+  }).toThrow(/Invalid OpCode/);
 
-  expect(machine.isRunning).toBe(false)
+  expect(machine.isRunning).toBe(false);
 });
 
 test("should run from a custom base address", () => {
   const machine = new AbacusMachine({ baseAddress: 0x500 });
 
-  machine.setMemoryValue("500", 0x000A);
-  machine.setMemoryValue("501", 0xF000);
+  machine.setMemoryValue("500", 0x000a);
+  machine.setMemoryValue("501", 0xf000);
 
   machine.run();
 
@@ -138,4 +138,4 @@ test("should multiply value at 0x150 by 0x250 and save to 0x300", () => {
 
 // Las celdas 200(16) y 201(16) contienen dos direcciones, se pide calcular la
 // sumatoria de todas las celdas comprendidas entre las direcciones dadas.
-test.skip("should sum all values between addresses stored at 0x200 and 0x201 and save to 0x400", () => {});
+test("should sum all values between addresses stored at 0x200 and 0x201 and save to 0x400", () => {});
