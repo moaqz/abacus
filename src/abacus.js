@@ -6,6 +6,7 @@ export class AbacusMachine {
 
   /** @type {Record<number, (addr: number) => void>} */
   #ISA = {
+    0x0: this.#loadImmediate.bind(this),
     0x1: this.#load.bind(this),
     0x2: this.#store.bind(this),
     0x3: this.#sum.bind(this),
@@ -33,6 +34,18 @@ export class AbacusMachine {
       ...this.#registries,
       memory: this.#memory,
     };
+  }
+
+  get getAccumulator() {
+    return this.#registries.ac[0];
+  }
+
+  get getProgramCounter() {
+    return this.#registries.pc[0];
+  }
+
+  get isRunning() {
+    return this.#isRunning;
   }
 
   step() {
@@ -82,10 +95,19 @@ export class AbacusMachine {
     const _addr = parseInt(address, 16);
 
     if (Number.isNaN(_addr) || _addr < 0x0 || _addr >= 0x1000) {
-      throw new Error(`Memory access violation: address 0x${address} is out of bounds (0x000-0xFFF).`);
+      throw new Error(
+        `Memory access violation: address 0x${address} is out of bounds (0x000-0xFFF).`,
+      );
     }
 
     return this.#memory[_addr];
+  }
+
+  /**
+   * @param {number} operand
+   */
+  #loadImmediate(operand) {
+    this.#registries.ac[0] = operand;
   }
 
   /**
