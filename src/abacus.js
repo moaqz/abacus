@@ -45,7 +45,7 @@ export class AbacusMachine {
 
     this.#registries.pc[0]++;
 
-    const opCode = instruction >>> 12 & 0x000F;
+    const opCode = (instruction >>> 12) & 0x000f;
     const operand = instruction & 0x0fff;
 
     const action = this.#ISA[opCode];
@@ -71,6 +71,21 @@ export class AbacusMachine {
     }
 
     this.#memory[_addr] = value;
+  }
+
+  /**
+   *
+   * @param {string} address
+   * @returns {number}
+   */
+  getMemoryValue(address) {
+    const _addr = parseInt(address, 16);
+
+    if (Number.isNaN(_addr) || _addr < 0x0 || _addr >= 0x1000) {
+      throw new Error(`Memory access violation: address 0x${address} is out of bounds (0x000-0xFFF).`);
+    }
+
+    return this.#memory[_addr];
   }
 
   /**
