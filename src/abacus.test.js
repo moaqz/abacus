@@ -138,4 +138,78 @@ test("should multiply value at 0x150 by 0x250 and save to 0x300", () => {
 
 // Las celdas 200(16) y 201(16) contienen dos direcciones, se pide calcular la
 // sumatoria de todas las celdas comprendidas entre las direcciones dadas.
-test("should sum all values between addresses stored at 0x200 and 0x201 and save to 0x400", () => {});
+test("should sum all values between addresses stored at 0x200 and 0x201 and save to 0x400", () => {
+  const machine = new AbacusMachine({ baseAddress: 0x105 });
+
+  // Data
+  machine.setMemoryValue("200", 0x300);
+  machine.setMemoryValue("201", 0x305);
+
+  machine.setMemoryValue("300", 10);
+  machine.setMemoryValue("301", 5);
+  machine.setMemoryValue("302", 10);
+  machine.setMemoryValue("303", 5);
+  machine.setMemoryValue("304", 10);
+  machine.setMemoryValue("305", 20);
+
+  machine.setMemoryValue("306", 1);
+  machine.setMemoryValue("307", 0x1000);
+  machine.setMemoryValue("400", 0);
+  machine.setMemoryValue("401", -1);
+
+  // Instructions
+
+  // Calculate how many elements the array has.
+  machine.setMemoryValue("105", 0x1200);
+  machine.setMemoryValue("106", 0x4fff);
+  machine.setMemoryValue("107", 0x3306);
+  machine.setMemoryValue("108", 0x3201);
+  machine.setMemoryValue("109", 0x2201);
+
+  machine.step(5);
+  expect(machine.getAccumulator).toEqual(5);
+  expect(machine.getMemoryValue("201")).toEqual(5);
+
+  machine.setMemoryValue("10A", 0x5fff); // no elements.
+  machine.step();
+  expect(machine.getProgramCounter).toEqual(0x10b);
+
+  machine.setMemoryValue("10B", 0x1200);
+  machine.setMemoryValue("10C", 0x3307);
+  machine.setMemoryValue("10D", 0x210e); // 10E cointains the instruction to load the first element of the array.
+  machine.step(4);
+
+  expect(machine.getAccumulator).toEqual(10);
+  expect(machine.getProgramCounter).toEqual(0x10f);
+
+  machine.setMemoryValue("10F", 0x3400);
+  machine.setMemoryValue("110", 0x2400);
+  machine.step(2);
+
+  expect(machine.getAccumulator).toEqual(10);
+  expect(machine.getMemoryValue("400")).toEqual(10);
+  expect(machine.getProgramCounter).toEqual(0x111);
+
+  machine.setMemoryValue("111", 0x110e);
+  machine.setMemoryValue("112", 0x3306);
+  machine.setMemoryValue("113", 0x210e); // move to the next index.
+  machine.step(3);
+
+  expect(machine.getMemoryValue("10e")).toEqual(0x1301);
+
+  machine.setMemoryValue("114", 0x1201);
+  machine.setMemoryValue("115", 0x3401);
+  machine.setMemoryValue("116", 0x2201); // decrement i
+  machine.step(3);
+
+  expect(machine.getMemoryValue("201")).toEqual(4);
+  expect(machine.getAccumulator).toEqual(4);
+
+  machine.setMemoryValue("117", 0x7fff);
+  machine.setMemoryValue("118", 0x0000);
+  machine.setMemoryValue("11A", 0x510e);
+  machine.setMemoryValue("FFF", 0xffff);
+  machine.run();
+
+  expect(machine.getMemoryValue("400")).toEqual(60);
+});
