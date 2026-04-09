@@ -28,6 +28,18 @@ test("should crash when executing an instruction with a invalid opcode", () => {
   expect(machine.isRunning).toBe(false)
 });
 
+test("should run from a custom base address", () => {
+  const machine = new AbacusMachine({ baseAddress: 0x500 });
+
+  machine.setMemoryValue("500", 0x000A);
+  machine.setMemoryValue("501", 0xF000);
+
+  machine.run();
+
+  expect(machine.getAccumulator).toBe(10);
+  expect(machine.getProgramCounter).toBe(0x502);
+});
+
 // En las celdas 150(16) y 250(16) se encuentran almacenados dos números X e Y.
 // Efectuar X - Y almacenando el resultado en la celda 300(16).
 test("should subtract value at 0x250 from 0x150 and save to 0x300", () => {

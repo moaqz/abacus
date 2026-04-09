@@ -2,9 +2,9 @@
 
 export class AbacusMachine {
   static #TOTAL_MEMORY_CELLS = 2 ** 12; // 4096
-  static #BASE_ADDRESS = 0x200;
+  #BASE_ADDRESS = 0x200;
 
-  /** @type {Record<number, (addr: number) => void>} */
+  /** @type {import("./abacus.d.ts").ISA} */
   #ISA = {
     0x0: this.#loadImmediate.bind(this),
     0x1: this.#load.bind(this),
@@ -25,8 +25,16 @@ export class AbacusMachine {
   #memory = new Int16Array(AbacusMachine.#TOTAL_MEMORY_CELLS);
   #isRunning = true;
 
-  constructor() {
-    this.#registries.pc[0] = AbacusMachine.#BASE_ADDRESS;
+  /**
+   *
+   * @param {Partial<import("./abacus.d.ts").AbacusOptions>} opts
+   */
+  constructor(opts = {}) {
+    if (opts.baseAddress) {
+      this.#BASE_ADDRESS = opts.baseAddress
+    }
+
+    this.#registries.pc[0] = this.#BASE_ADDRESS;
   }
 
   get getState() {
