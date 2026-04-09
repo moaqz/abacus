@@ -64,6 +64,17 @@ export class AbacusMachine {
     const action = this.#ISA[opCode];
     if (action && action instanceof Function) {
       action(operand);
+    } else {
+      this.#isRunning = false;
+      throw new Error(
+        `Invalid OpCode 0x${opCode.toString(16)} at address 0x${address.toString(16)}`,
+      );
+    }
+  }
+
+  run() {
+    while (this.#isRunning) {
+      this.step();
     }
   }
 
