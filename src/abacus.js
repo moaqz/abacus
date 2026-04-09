@@ -56,27 +56,30 @@ export class AbacusMachine {
     return this.#isRunning;
   }
 
-  step() {
-    if (!this.#isRunning) {
-      return;
-    }
+  /**
+   * @param {number} n
+   */
+  step(n = 1) {
+    while (n > 0 && this.#isRunning) {
+      const address = this.#registries.pc[0];
+      const instruction = this.#memory[address];
 
-    const address = this.#registries.pc[0];
-    const instruction = this.#memory[address];
+      this.#registries.pc[0]++;
 
-    this.#registries.pc[0]++;
+      const opCode = (instruction >>> 12) & 0x000f;
+      const operand = instruction & 0x0fff;
 
-    const opCode = (instruction >>> 12) & 0x000f;
-    const operand = instruction & 0x0fff;
+      const action = this.#ISA[opCode];
+      if (action && action instanceof Function) {
+        action(operand);
+      } else {
+        this.#isRunning = false;
+        throw new Error(
+          `Invalid OpCode 0x${opCode.toString(16)} at address 0x${address.toString(16)}`,
+        );
+      }
 
-    const action = this.#ISA[opCode];
-    if (action && action instanceof Function) {
-      action(operand);
-    } else {
-      this.#isRunning = false;
-      throw new Error(
-        `Invalid OpCode 0x${opCode.toString(16)} at address 0x${address.toString(16)}`,
-      );
+      n--;
     }
   }
 
