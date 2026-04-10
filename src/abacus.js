@@ -5,7 +5,7 @@ export class AbacusMachine {
   #BASE_ADDRESS = 0x200;
 
   /** @type {import("./abacus.d.ts").ISA} */
-  #ISA = {
+  #opCodes = {
     0x0: this.#loadImmediate.bind(this),
     0x1: this.#load.bind(this),
     0x2: this.#store.bind(this),
@@ -73,7 +73,7 @@ export class AbacusMachine {
       const opCode = (instruction >>> 12) & 0x000f;
       const operand = instruction & 0x0fff;
 
-      const action = this.#ISA[opCode];
+      const action = this.#opCodes[opCode];
       if (action && action instanceof Function) {
         action(operand);
       } else {
