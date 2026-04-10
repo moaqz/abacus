@@ -4,7 +4,7 @@ export class AbacusMachine {
   static #TOTAL_MEMORY_CELLS = 2 ** 12; // 4096
   #BASE_ADDRESS = 0x200;
 
-  /** @type {import("./abacus.d.ts").ISA} */
+  /** @type {import("./abacus.d.ts").Opcodes} */
   #opCodes = {
     0x0: this.#loadImmediate.bind(this),
     0x1: this.#load.bind(this),

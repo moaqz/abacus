@@ -2,7 +2,7 @@ export interface AbacusOptions {
   baseAddress: number;
 }
 
-export type ISA = Record<number, (addr: number) => void>;
+export type Opcodes = Record<number, (addr: number) => void>;
 
 export class AbacusMachine {
   /**
