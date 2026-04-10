@@ -28,6 +28,14 @@ test("should crash when executing an instruction with a invalid opcode", () => {
   expect(machine.isRunning).toBe(false);
 });
 
+test("should cash if no stop instruction is found", () => {
+  const machine = new AbacusMachine();
+
+  expect(() => {
+    machine.run();
+  }).toThrow(/Memory out of bound/);
+});
+
 test("should run from a custom base address", () => {
   const machine = new AbacusMachine({ baseAddress: 0x500 });
 

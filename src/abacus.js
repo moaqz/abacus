@@ -61,6 +61,15 @@ export class AbacusMachine {
    */
   step(n = 1) {
     while (n > 0 && this.#isRunning) {
+      if (this.#registries.pc[0] >= AbacusMachine.#TOTAL_MEMORY_CELLS) {
+        this.#isRunning = false;
+
+        const address = this.#registries.pc[0];
+        throw new Error(
+          `Memory out of bounds at address 0x${address.toString(16)}: Missing stop instruction (0xF)`,
+        );
+      }
+
       const address = this.#registries.pc[0];
       const instruction = this.#memory[address];
 
