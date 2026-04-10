@@ -37,13 +37,6 @@ export class AbacusMachine {
     this.#registries.pc[0] = this.#BASE_ADDRESS;
   }
 
-  get getState() {
-    return {
-      ...this.#registries,
-      memory: this.#memory,
-    };
-  }
-
   get getAccumulator() {
     return this.#registries.ac[0];
   }
@@ -75,6 +68,8 @@ export class AbacusMachine {
 
       this.#registries.pc[0]++;
 
+      // JavaScript converts numbers to 32-bit integers before bitwise operations.
+      // The & 0x000f is necessary to get only the last 4 bits and ignore the rest.
       const opCode = (instruction >>> 12) & 0x000f;
       const operand = instruction & 0x0fff;
 
