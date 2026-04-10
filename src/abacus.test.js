@@ -28,7 +28,7 @@ test("should crash when executing an instruction with a invalid opcode", () => {
   expect(machine.isRunning).toBe(false);
 });
 
-test("should cash if no stop instruction is found", () => {
+test("should crash if no stop instruction is found", () => {
   const machine = new AbacusMachine();
 
   expect(() => {
