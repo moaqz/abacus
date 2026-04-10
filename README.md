@@ -39,9 +39,12 @@ El conjunto de instrucciones de la máquina Abacus es el siguiente:
 npm install @moaqzdev/abacus
 ```
 
+> [!IMPORTANT]
+> La librería no tiene soporte directo para módulos CommonJS. Para usarla, asegúrate de que tu package.json incluya la opción `type: "module"`.
+
 ### Inicialización de la Máquina
 
-Para comenzar, instancia la clase `AbacusMachine`. Opcionalmente se le puede pasar un parámetro `baseAddress` para indicar el punto de carga.
+Para comenzar, crear una instancia de la clase `AbacusMachine`. Opcionalmente se le puede pasar un parámetro `baseAddress` para indicar el punto de carga.
 
 ```js
 import { AbacusMachine } from "@moaqzdev/abacus";
@@ -69,7 +72,7 @@ machine.setMemoryValue("100", 0x1200);
 ```
 
 > [!WARNING]
-> Si se desea guardar números en hexadecimal se deben incluir con el prefijo 0x, de lo contrario, serán tratados como decimales.
+> Por defecto, los valores se tratan como decimales. Para utilizar números hexadecimales, utiliza el prefijo 0x (ej. 0x0FFF).
 
 **getMemoryValue(direccion)**
 
@@ -150,4 +153,4 @@ console.log("Resultado de la suma:", machine.getMemoryValue("202")); // Output: 
 ```
 
 > [!IMPORTANT]
-> Los tests son documentacion viva, si aún tienes dudas de qué se puede hacer con Abacus puedes consultar los [tests](./src/abacus.test.js).
+> Los tests son documentación viva, si aún tienes dudas de qué se puede hacer con Abacus puedes consultar los [tests](./src/abacus.test.js).
