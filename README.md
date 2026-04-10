@@ -1,7 +1,5 @@
 # Abacus
 
-Abacus es una máquina tipo Von Neumann cuyo esquema es el siguiente:
-
 <img width="610" height="504" alt="image" src="https://github.com/user-attachments/assets/022b85b8-5c9c-4d86-b89e-9f9d0d55e04c" />
 
 ## Formato de instrucciones
@@ -35,24 +33,28 @@ El conjunto de instrucciones de la máquina Abacus es el siguiente:
 
 ## Guía de Uso
 
+### Instalación
+
+```sh
+npm install @moaqzdev/abacus
+```
+
 ### Inicialización de la Máquina
 
-Para comenzar, instancia la clase `AbacusMachine`. Puedes pasar una dirección base opcional para el registro de próxima instrucción (RPI).
+Para comenzar, instancia la clase `AbacusMachine`. Opcionalmente se le puede pasar un parámetro `baseAddress` para indicar el punto de carga.
 
 ```js
 import { AbacusMachine } from "@moaqzdev/abacus";
 
-const machine = new AbacusMachine({ 
+const machine = new AbacusMachine({
   baseAddress: 0x100,
 });
 
 // o
-const machine = new AbacusMachine(); // Se asume que la celda de carga es la 0x200.
+const machine = new AbacusMachine(); // Se asume que el punto de carga es 0x200.
 ```
 
 ### Gestión de Memoria y Datos
-
-Antes de ejecutar, debes cargar tu programa (instrucciones) y tus datos en la memoria.
 
 **setMemoryValue(direccion, valor)**
 
@@ -67,7 +69,7 @@ machine.setMemoryValue("100", 0x1200);
 ```
 
 > [!WARNING]
-> Si se desea guardar números en hexadecimal, deben incluirse con el prefijo 0x, de lo contrario, serán tratados como decimales.
+> Si se desea guardar números en hexadecimal se deben incluir con el prefijo 0x, de lo contrario, serán tratados como decimales.
 
 **getMemoryValue(direccion)**
 
@@ -79,19 +81,19 @@ console.log(`El valor en 0x201 es: ${resultado}`);
 ```
 
 > [!IMPORTANT]
-> Los datos en memoria se guardan en binario, pero al recuperarlos se convierten automáticamente a números decimales.
+> Los datos en memoria se guardan en binario pero al recuperarlos se convierten automáticamente a números decimales.
 
 ### Ejecución y Control
 
-Una vez cargado el programa, puedes controlar cómo se procesan las instrucciones usando los siguientes métodos:
+Una vez cargado el programa y los datos se puede controlar el flujo de ejecución del programa a través de los siguientes métodos:
 
 **step(n)**
 
 Ejecuta una cantidad específica de instrucciones.
 
 ```js
-machine.step();     // Ejecuta la siguiente instrucción
-machine.step(5);    // Ejecuta las próximas 5 instrucciones
+machine.step(); // Ejecuta la siguiente instrucción
+machine.step(5); // Ejecuta las próximas 5 instrucciones
 ```
 
 **run()**
@@ -102,7 +104,7 @@ Ejecuta el programa de forma continua hasta que la máquina encuentre la instruc
 machine.run();
 ```
 
-## Inspección de Registros
+### Inspección de Registros
 
 Puedes consultar el estado interno del procesador en cualquier momento usando los siguientes métodos:
 
@@ -131,14 +133,14 @@ console.log("Siguiente instrucción en:", machine.getProgramCounter.toString(16)
 const machine = new AbacusMachine({ baseAddress: 0x100 });
 
 // 1. Cargamos los datos en memoria
-machine.setMemoryValue("200", 15);   // Valor A
-machine.setMemoryValue("201", 10);   // Valor B
+machine.setMemoryValue("200", 15); // Valor A
+machine.setMemoryValue("201", 10); // Valor B
 
 // 2. Cargamos el programa (instrucciones)
 machine.setMemoryValue("100", 0x1200); // Carga (1) el contenido de 200
 machine.setMemoryValue("101", 0x3201); // Suma (3) el contenido de 201
 machine.setMemoryValue("102", 0x2202); // Almacena (2) en 202
-machine.setMemoryValue("103", 0xF000); // Fin de Programa (F)
+machine.setMemoryValue("103", 0xf000); // Fin de Programa (F)
 
 // 3. Ejecutamos
 machine.run();
@@ -146,3 +148,6 @@ machine.run();
 // 4. Verificamos el resultado
 console.log("Resultado de la suma:", machine.getMemoryValue("202")); // Output: 25
 ```
+
+> [!IMPORTANT]
+> Los tests son documentacion viva, si aún tienes dudas de qué se puede hacer con Abacus puedes consultar los [tests](./src/abacus.test.js).
